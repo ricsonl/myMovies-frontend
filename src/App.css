@@ -1,0 +1,30 @@
+:root {
+  --grey: #313131;
+  --light-grey: #414141;
+  --lighter-grey: #707070;
+  --white: #fcf8e8;
+  --magenta: #ca3e47;
+  --green: #025e19;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+
+  background: var(--light-grey);
+  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body, input, select, button, textarea {
+  font-family: Poppins, Ubuntu, sans-serif;
+  color: var(--white);
+}
