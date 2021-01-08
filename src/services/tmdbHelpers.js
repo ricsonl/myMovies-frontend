@@ -1,14 +1,12 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const tmbdApi = axios.create();
 
 const searchById = async (id) => {
-  const movieResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_KEY}`);
+  const movieResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`);
   const movie = movieResponse.data;
 
-  const imagesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${movie.id}/images?api_key=${process.env.TMDB_KEY}`);
+  const imagesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${movie.id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`);
   const images = imagesResponse.data.backdrops;
 
   let imageUrl = `https://t4.ftcdn.net/jpg/02/07/87/79/360_F_207877921_BtG6ZKAVvtLyc5GWpBNEIlIxsffTtWkv.jpg`
@@ -26,12 +24,12 @@ const searchById = async (id) => {
 }
 
 const searchByText = async (text) => {
-  const moviesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_KEY}&query=${text}`);
+  const moviesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&query=${text}`);
   const movies = moviesResponse.data.results;
   
   return await Promise.all(movies.map( async (movie) => {
     
-    const imagesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${movie.id}/images?api_key=${process.env.TMDB_KEY}`);
+    const imagesResponse = await tmbdApi.get(`https://api.themoviedb.org/3/movie/${movie.id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`);
     const images = imagesResponse.data.backdrops;
 
     let imageUrl = `https://t4.ftcdn.net/jpg/02/07/87/79/360_F_207877921_BtG6ZKAVvtLyc5GWpBNEIlIxsffTtWkv.jpg`
