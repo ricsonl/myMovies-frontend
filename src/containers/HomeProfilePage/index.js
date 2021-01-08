@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 
 import UserContext from '../../context/UserContext';
-import api from '../../services/api';
-import { searchByGenre } from '../../services/tmdbHelpers';
+//import api from '../../services/api';
+//import { searchByGenre } from '../../services/tmdbHelpers';
 
 import NavBar from '../NavBar';
 import MovieList from '../../components/MovieList';

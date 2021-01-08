@@ -8,9 +8,12 @@ import styles from './styles.module.css';
 const WatchlistItem = (props) => {
   const [movie, setMovie] = useState({});
 
-  useEffect(async () => {
-    const mv = await searchById(props.tmdbId);
-    setMovie(mv);
+  useEffect(() => {
+    async function fetchData() {
+      const mv = await searchById(props.tmdbId);
+      setMovie(mv);
+    }
+    fetchData();
   }, [])
 
   return (

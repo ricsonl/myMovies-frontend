@@ -25,11 +25,13 @@ class LoginPage extends Component {
     e.preventDefault();
     
     const response = await api.post('/login', { email: this.state.email, password: this.state.password });
-
+  
     if (response.data.id) {
 
         const { id } = response.data;
         this.context.setLoggedAcc(id);
+
+        localStorage.setItem('myMoviesToken', response.data.token);
         
         this.props.history.push(`/accountHome`);
 
