@@ -1,4 +1,4 @@
-## Frontend
+## MyMovies Frontend
 
 ### Tecnologias utilizadas 
 * ReactJS   
