@@ -1,20 +1,15 @@
 import React from 'react';
 
-const AppContext = React.createContext({
+const UserMoviesContext = React.createContext({
 
-  auth: undefined,
-  searchText: '',
-  profileName: '',
   suggestedMovies: [],
   watchlist: [],
   searchResults: [],
 
-  setAuth: ()=>{},
-  setProfileName: ()=>{},
   setSuggestedMovies: ()=>{},
   setWatchlist: ()=>{},
   setSearchResults: ()=>{},
 
 });
 
-export default AppContext;
+export default UserMoviesContext;

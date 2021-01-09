@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import UserMoviesContext from '../../context/UserMoviesContext';
 import api from '../../services/api';
 
 import ProfileItem from '../../components/ProfileItem';
@@ -8,6 +9,8 @@ import styles from './styles.module.css';
 
 class HomeAccountPage extends Component {
 
+  static contextType = UserMoviesContext;
+
   state = {
     auth: undefined,
     profiles: [],
@@ -15,7 +18,6 @@ class HomeAccountPage extends Component {
 
   componentDidMount() {
     this.checkAuth();
-
   }
 
   checkAuth(){
@@ -44,7 +46,22 @@ class HomeAccountPage extends Component {
   onProfileClick = (id, name) => {
     localStorage.setItem('prof', id);
     localStorage.setItem('profileName', name);
-    this.props.history.push(`/profileHome`);
+
+    const token = localStorage.getItem('token');
+
+    api.get('/auth/watchlist', {
+      headers: {
+        logged_prof: id,
+        'x-access-token': token
+      }
+    }).then(response => {
+      if(response.data.authFailed){
+        return;
+      } else {
+        this.context.setWatchlist(response.data);
+        this.props.history.push(`/profileHome`);
+      }
+    });
   }
 
   onAddProfileClick = () => {

@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
+import UserMoviesContext from '../../context/UserMoviesContext';
 import api from '../../services/api';
 
 import Watchlist from '../../components/Watchlist';
 import styles from './styles.module.css';
 
-class WatchlistPage extends Component {
+class WatchlistPage extends PureComponent {
+
+  static contextType = UserMoviesContext;
 
   componentDidMount(){
     const loggedProf = localStorage.getItem('prof');
@@ -18,10 +21,9 @@ class WatchlistPage extends Component {
       }
     }).then(response => {
       if(response.data.authFailed){
-        this.props.setAuth(false);
+        return;
       } else {
-        this.props.setAuth(true);
-        this.props.setWatchlist(response.data);
+        this.context.setWatchlist(response.data);
       }
     });
   }
@@ -30,7 +32,7 @@ class WatchlistPage extends Component {
     return(
       <> 
         <h2 className={styles.title}>Watchlist</h2>
-        <Watchlist movies={this.props.watchlist} remove={this.props.removeWatchlistItem} />
+        <Watchlist movies={this.context.watchlist} remove={this.props.removeWatchlistItem} />
       </>
     );
   }

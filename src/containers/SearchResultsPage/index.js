@@ -1,93 +1,60 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-import api from '../../services/api';
 import { searchByText } from '../../services/tmdbHelpers';
+import UserMoviesContext from '../../context/UserMoviesContext';
 
 import MovieList from '../../components/MovieList';
 import styles from './styles.module.css';
 
-class SearchResultsPage extends Component {
+class SearchResultsPage extends PureComponent {
 
-  state = {
-    auth: undefined,
-    searchText: '',
-    watchlistIds: [],
-    searchResults: [],
-  }
+  static contextType = UserMoviesContext;
 
-  componentDidMount(){
+  componentDidMount() {
+    const watchlistIds = this.context.watchlist.map(movie => {
+      return parseInt(movie.TMDB_id, 10);
+    });
 
-    const loggedProf = localStorage.getItem('prof');
-    const token = localStorage.getItem('token');
+    searchByText(this.props.match.params.text).then(response => {
 
-    api.get('/auth/watchlist', {
-      headers: {
-        logged_prof: loggedProf,
-        'x-access-token': token
-      }
-    }).then(response => {
+      const modifiedSearchResults = response.map(movie => {
+        movie.isOnWatchlist = watchlistIds.includes(movie.tmdbId);
+        return movie;
+      });
 
-      if (response.data.authFailed) {
-        this.setState({ auth: false });
+      this.context.setSearchResults(modifiedSearchResults);
 
-      } else {
-
-        const watchlistIds = response.data.map(movie => {
-          return movie.TMDB_id;
-        })
-
-        this.setState({
-          auth: true,
-          searchText: this.props.match.params.text,
-          watchlistIds: watchlistIds
-        });
-    
-        searchByText(this.props.match.params.text).then(response => {
-
-          const modifiedMovies = response.map( movie => {
-            return {
-              isOnWatchlist: this.state.watchlistIds.includes(movie.tmdbId),
-              ...movie
-            }
-          });
-    
-          this.setState({searchResults: modifiedMovies});
-    
-        });
-      }
     });
   }
 
-  
-  addToWatchlist = async (id) => {
-    const loggedProf = localStorage.getItem('prof');
-    const token = localStorage.getItem('token');
+  componentWillReceiveProps(newProps) {
+    if (newProps.match.params.text !== this.props.match.params.text) {
+      const watchlistIds = this.context.watchlist.map(movie => {
+        return parseInt(movie.TMDB_id, 10);
+      });
 
-    api.post(`/auth/watchlist/${id}`, null, {
-      headers: {
-        logged_prof: loggedProf,
-        'x-access-token': token
-      }
-    }).then(response => {
+      searchByText(newProps.match.params.text).then(response => {
 
-      if (response.data.authFailed)
-        this.setState({ auth: false });
-      else
-        this.setState({
-          auth: true,
-          watchlistIds: [...this.state.watchlistIds, response.TMDB_id]
-        })
+        const modifiedMovies = response.map(movie => {
+          return {
+            isOnWatchlist: watchlistIds.includes(movie.tmdbId),
+            ...movie
+          }
+        });
 
-    });
+        this.context.setSearchResults(modifiedMovies);
+
+      });
+    }
   }
 
   render() {
-    return this.state.auth ? (
-      <> 
+    return (
+      <>
         <h2 className={styles.title}>Resultados da busca</h2>
-        <MovieList movies={this.state.searchResults} add={this.addToWatchlist} />
+        <MovieList movies={this.context.searchResults} add={this.props.addWatchlistItem} />
       </>
-    ) : null
+    )
   }
 }
 

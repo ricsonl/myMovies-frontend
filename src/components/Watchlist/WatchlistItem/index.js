@@ -14,7 +14,7 @@ const WatchlistItem = (props) => {
       setMovie(mv);
     }
     fetchData();
-  }, [])
+  }, [props.tmdbId])
 
   return (
     <li className={styles.card}>
