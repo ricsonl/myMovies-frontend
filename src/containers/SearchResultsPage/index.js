@@ -1,93 +1,61 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-import api from '../../services/api';
 import { searchByText } from '../../services/tmdbHelpers';
 
 import MovieList from '../../components/MovieList';
 import styles from './styles.module.css';
 
-class SearchResultsPage extends Component {
-
-  state = {
-    auth: undefined,
-    searchText: '',
-    watchlistIds: [],
-    searchResults: [],
-  }
+class SearchResultsPage extends PureComponent {
 
   componentDidMount(){
 
-    const loggedProf = localStorage.getItem('prof');
-    const token = localStorage.getItem('token');
+    const watchlistIds = this.props.watchlist.map(movie => {
+      return movie.TMDB_id;
+    });
 
-    api.get('/auth/watchlist', {
-      headers: {
-        logged_prof: loggedProf,
-        'x-access-token': token
-      }
-    }).then(response => {
+    searchByText(this.props.match.params.text).then(response => {
 
-      if (response.data.authFailed) {
-        this.setState({ auth: false });
+      const modifiedMovies = response.map( movie => {
+        return {
+          isOnWatchlist: watchlistIds.includes(movie.tmdbId),
+          ...movie
+        }
+      });
 
-      } else {
+      this.props.setSearchResults(modifiedMovies);
 
-        const watchlistIds = response.data.map(movie => {
-          return movie.TMDB_id;
-        })
-
-        this.setState({
-          auth: true,
-          searchText: this.props.match.params.text,
-          watchlistIds: watchlistIds
-        });
-    
-        searchByText(this.props.match.params.text).then(response => {
-
-          const modifiedMovies = response.map( movie => {
-            return {
-              isOnWatchlist: this.state.watchlistIds.includes(movie.tmdbId),
-              ...movie
-            }
-          });
-    
-          this.setState({searchResults: modifiedMovies});
-    
-        });
-      }
     });
   }
 
+  componentWillReceiveProps(newProps){
+    if(newProps.match.params.text != this.props.match.params.text){
+      const watchlistIds = newProps.watchlist.map(movie => {
+        return movie.TMDB_id;
+      });
   
-  addToWatchlist = async (id) => {
-    const loggedProf = localStorage.getItem('prof');
-    const token = localStorage.getItem('token');
-
-    api.post(`/auth/watchlist/${id}`, null, {
-      headers: {
-        logged_prof: loggedProf,
-        'x-access-token': token
-      }
-    }).then(response => {
-
-      if (response.data.authFailed)
-        this.setState({ auth: false });
-      else
-        this.setState({
-          auth: true,
-          watchlistIds: [...this.state.watchlistIds, response.TMDB_id]
-        })
-
-    });
+      searchByText(newProps.match.params.text).then(response => {
+  
+        const modifiedMovies = response.map( movie => {
+          return {
+            isOnWatchlist: watchlistIds.includes(movie.tmdbId),
+            ...movie
+          }
+        });
+  
+        newProps.setSearchResults(modifiedMovies);
+  
+      });
+    }
   }
 
   render() {
-    return this.state.auth ? (
+    console.log('a')
+    return (
       <> 
         <h2 className={styles.title}>Resultados da busca</h2>
-        <MovieList movies={this.state.searchResults} add={this.addToWatchlist} />
+        <MovieList movies={this.props.movies} add={this.props.addWatchlistItem} />
       </>
-    ) : null
+    )
   }
 }
 

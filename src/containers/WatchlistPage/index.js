@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import api from '../../services/api';
 
 import Watchlist from '../../components/Watchlist';
 import styles from './styles.module.css';
 
-class WatchlistPage extends Component {
+class WatchlistPage extends PureComponent {
 
   componentDidMount(){
     const loggedProf = localStorage.getItem('prof');
@@ -18,9 +18,8 @@ class WatchlistPage extends Component {
       }
     }).then(response => {
       if(response.data.authFailed){
-        this.props.setAuth(false);
+        return;
       } else {
-        this.props.setAuth(true);
         this.props.setWatchlist(response.data);
       }
     });

@@ -1,11 +1,11 @@
 import React from 'react';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import LoginPage from './containers/LoginPage';
 import SignupPage from './containers/SignupPage';
 import HomeAccountPage from './containers/HomeAccountPage';
 import CreateProfilePage from './containers/CreateProfilePage';
-import NavBar from './containers/NavBar';
+import NavBarPages from './containers/NavBarPages';
 
 function Routes(){
     return(
@@ -14,7 +14,7 @@ function Routes(){
             <Route path="/signup" component={SignupPage} />
             <Route path="/accountHome" component={HomeAccountPage} />
             <Route path="/createProfile" component={CreateProfilePage} />
-            <Route path="/" render={() => <NavBar />} />
+            <Route path="/" component={NavBarPages} />
         </BrowserRouter>
     );
 }

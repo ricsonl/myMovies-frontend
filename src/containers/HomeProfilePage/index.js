@@ -15,7 +15,6 @@ class HomeProfilePage extends Component {
 
   componentDidMount(){
     this.checkAuth();
-    console.log(this.props.text)
     /*const genres = [];
     const response = await searchByGenre(genres);
     this.setState({ 
