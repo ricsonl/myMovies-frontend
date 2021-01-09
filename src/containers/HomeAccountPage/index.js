@@ -12,15 +12,10 @@ class HomeAccountPage extends Component {
   static contextType = UserMoviesContext;
 
   state = {
-    auth: undefined,
     profiles: [],
   }
 
   componentDidMount() {
-    this.checkAuth();
-  }
-
-  checkAuth(){
     const loggedAcc = localStorage.getItem('acc');
     const token = localStorage.getItem('token');
 
@@ -32,11 +27,10 @@ class HomeAccountPage extends Component {
     }).then(response => {
 
       if (response.data.authFailed) {
-        this.setState({ auth: false });
+        return;
 
       } else {
         this.setState({
-          auth: true,
           profiles: response.data
         });
       }
@@ -69,7 +63,7 @@ class HomeAccountPage extends Component {
   }
 
   render() {
-    return this.state.auth ? (
+    return (
       <>
         <h1 className={styles.title}>Selecione um perfil</h1>
         <ul className={styles.profileList}>
@@ -92,7 +86,7 @@ class HomeAccountPage extends Component {
           }
         </ul>
       </>
-    ) : null
+    )
   }
 }
 
