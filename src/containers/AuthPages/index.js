@@ -139,7 +139,7 @@ class AuthPages extends PureComponent {
       }}>
         
         <Route path="/accountHome" render={(props) => <HomeAccountPage history={props.history}/>}/>
-        <Route path="/createProfile" render={(props) => <CreateProfilePage />}/>
+        <Route path="/createProfile" render={(props) => <CreateProfilePage history={props.history}/>}/>
 
         <NavBar history={this.props.history} profileName={this.state.profileName}>
           <Route path="/profileHome" render={(props) => <HomeProfilePage />}/>
