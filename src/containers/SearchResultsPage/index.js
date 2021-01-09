@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import api from '../../services/api';
 import { searchByText } from '../../services/tmdbHelpers';
 
-import NavBar from '../NavBar';
 import MovieList from '../../components/MovieList';
 import styles from './styles.module.css';
 
@@ -85,7 +84,6 @@ class SearchResultsPage extends Component {
   render() {
     return this.state.auth ? (
       <> 
-        <NavBar history={this.props.history}/>
         <h2 className={styles.title}>Resultados da busca</h2>
         <MovieList movies={this.state.searchResults} add={this.addToWatchlist} />
       </>

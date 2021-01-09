@@ -18,6 +18,10 @@ class LoginPage extends Component {
     error: '',
   }
 
+  componentDidMount(){
+    localStorage.clear();
+  }
+
   handleLogin = async (e) => {
     e.preventDefault();
     

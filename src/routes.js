@@ -5,23 +5,16 @@ import LoginPage from './containers/LoginPage';
 import SignupPage from './containers/SignupPage';
 import HomeAccountPage from './containers/HomeAccountPage';
 import CreateProfilePage from './containers/CreateProfilePage';
-import HomeProfilePage from './containers/HomeProfilePage';
-import WatchlistPage from './containers/WatchlistPage';
-import SearchResultsPage from './containers/SearchResultsPage';
+import NavBar from './containers/NavBar';
 
 function Routes(){
     return(
         <BrowserRouter>
-            <Route exact path="/" component={LoginPage}/>
-            <Route path="/signup" component={SignupPage}/>
-
+            <Route exact path="/" component={LoginPage} />
+            <Route path="/signup" component={SignupPage} />
             <Route path="/accountHome" component={HomeAccountPage} />
             <Route path="/createProfile" component={CreateProfilePage} />
-            <Route path="/profileHome" component={HomeProfilePage} />
-            <Route path="/search/:text" component={SearchResultsPage} />
-            <Route path="/watchlist" component={WatchlistPage} />
-            {/*<Route render={() => <Redirect to={{pathname: "/"}} />} />*/}
-            
+            <Route path="/" render={() => <NavBar />} />
         </BrowserRouter>
     );
 }
