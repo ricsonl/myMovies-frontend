@@ -7,6 +7,15 @@
 * The Movie Database API
 * JWT
 
+### Funcionalidades
+* **Criar conta**  
+* **Login da conta**  
+* **Busca de filmes**  
+* **Marcar filme como para assistir**  
+* **Visualizar lista para assistir**  
+* Criar Perfil  
+* Listar perfis  
+
 #### Para executar:
 1. Obter uma key da <a href="https://developers.themoviedb.org/3/getting-started/introduction">The Movie Database API</a>
 2. Criar um arquivo `.env` na raiz do projeto com as seguintes variáveis:
