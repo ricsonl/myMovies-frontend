@@ -1,6 +1,7 @@
 ## MyMovies Frontend
 
 ### Tecnologias utilizadas 
+* NodeJS
 * ReactJS   
 * Axios
 * The Movie Database API
