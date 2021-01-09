@@ -4,16 +4,18 @@ import { NavLink } from 'react-router-dom';
 import Logo from '../../components/Logo';
 import Input from '../../components/Input';
 
-import UserContext from '../../context/UserContext';
-
 import styles from './styles.module.css';
 
 class NavBar extends PureComponent {
 
-  static contextType = UserContext;
-
   state = {
     searchText: '',
+    profileName: '',
+  }
+
+  componentDidMount(){
+    const profileName = localStorage.getItem('profileName');
+    this.setState({ profileName: profileName });
   }
 
   onSearch = (e) => {
@@ -51,7 +53,7 @@ class NavBar extends PureComponent {
         </NavLink>
 
         <NavLink to={`/accountHome`} className={styles.navItem}>
-          {this.context.profileName}
+          {this.state.profileName}
           <p>trocar perfil</p>
         </NavLink>
 

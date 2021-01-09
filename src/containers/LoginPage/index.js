@@ -6,14 +6,11 @@ import Form from '../../components/Form';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import UserContext from '../../context/UserContext';
 import api from '../../services/api';
 
 import styles from './styles.module.css';
 
 class LoginPage extends Component {
-
-  static contextType = UserContext;
 
   state = {
     email: '',
@@ -24,18 +21,21 @@ class LoginPage extends Component {
   handleLogin = async (e) => {
     e.preventDefault();
     
-    const response = await api.post('/login', { email: this.state.email, password: this.state.password });
-  
-    if (response.data.id) {
+    api.post('/login', {
+      email: this.state.email,
+      password: this.state.password
+    }).then(response => {
+      if (response.data.id) {
+        const { id, token } = response.data;
 
-        const { id } = response.data;
-        this.context.setLoggedAcc(id);
-
-        localStorage.setItem('myMoviesToken', response.data.token);
+        localStorage.setItem('token', token);
+        localStorage.setItem('acc', id);
         
         this.props.history.push(`/accountHome`);
 
-    } else this.setState({ error: response.data.message });
+      }
+      else this.setState({ error: response.data.message });
+    });
   }
 
   render() {

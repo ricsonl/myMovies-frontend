@@ -1,26 +1,23 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
-import UserContext from '../../context/UserContext';
-//import api from '../../services/api';
-//import { searchByGenre } from '../../services/tmdbHelpers';
+import api from '../../services/api';
 
 import NavBar from '../NavBar';
 import MovieList from '../../components/MovieList';
 import styles from './styles.module.css';
 
-class HomeProfilePage extends PureComponent {
-
-  static contextType = UserContext;
+class HomeProfilePage extends Component {
 
   state = {
+    auth: undefined,
     searchText: '',
     suggestedMovies: [],
   }
 
-  async componentDidMount(){
+  componentDidMount(){
+    this.checkAuth();
 
-    /*const loggedProf = this.context.loggedProf;
-    const genres = [];
+    /*const genres = [];
     const response = await searchByGenre(genres);
     this.setState({ 
       suggestedMovies: response.data
@@ -28,16 +25,36 @@ class HomeProfilePage extends PureComponent {
 
   }
 
-  
+  checkAuth(){
+    const loggedAcc = localStorage.getItem('acc');
+    const token = localStorage.getItem('token');
+
+    api.get('/auth/profiles', {
+      headers: {
+        logged_acc: loggedAcc,
+        'x-access-token': token
+      }
+    }).then(response => {
+
+      if (response.data.authFailed) {
+        this.setState({ auth: false });
+
+      } else {
+        this.setState({
+          auth: true,
+        });
+      }
+    });
+  }
 
   render() {
-    return (
+    return this.state.auth ? (
       <> 
-        <NavBar history={this.props.history}/>
+        <NavBar match={this.props.match} history={this.props.history}/>
         <h2 className={styles.title}>Aqui estão alguns filmes que você pode gostar</h2>
         <MovieList movies={this.state.suggestedMovies} />
       </>
-    )
+    ) : null
   }
 }
 

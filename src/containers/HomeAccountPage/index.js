@@ -1,47 +1,49 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+
+import api from '../../services/api';
 
 import ProfileItem from '../../components/ProfileItem';
 
-import UserContext from '../../context/UserContext';
-import api from '../../services/api';
-
 import styles from './styles.module.css';
 
-class HomeAccountPage extends PureComponent {
-
-  static contextType = UserContext;
+class HomeAccountPage extends Component {
 
   state = {
+    auth: undefined,
     profiles: [],
   }
 
-  async componentDidMount(){
-    
-    this.context.setLoggedProf(null);
-    this.context.setProfileName('');
-    this.context.setWatchlist([]);
+  componentDidMount() {
+    this.checkAuth();
 
-    const loggedAcc = this.context.loggedAcc;
+  }
 
-    const response = await api.get('/profiles', {
-      headers: { logged_acc: loggedAcc }
-    });
+  checkAuth(){
+    const loggedAcc = localStorage.getItem('acc');
+    const token = localStorage.getItem('token');
 
-    this.setState({
-      profiles: response.data
+    api.get('/auth/profiles', {
+      headers: {
+        logged_acc: loggedAcc,
+        'x-access-token': token
+      }
+    }).then(response => {
+
+      if (response.data.authFailed) {
+        this.setState({ auth: false });
+
+      } else {
+        this.setState({
+          auth: true,
+          profiles: response.data
+        });
+      }
     });
   }
 
-  onProfileClick = async (id, name) => {
-    this.context.setLoggedProf(id);
-    this.context.setProfileName(name);
-
-    const response = await api.get('/watchlist', {
-      headers: { logged_prof: id }
-    });
-
-    this.context.setWatchlist(response.data);
-
+  onProfileClick = (id, name) => {
+    localStorage.setItem('prof', id);
+    localStorage.setItem('profileName', name);
     this.props.history.push(`/profileHome`);
   }
 
@@ -50,30 +52,30 @@ class HomeAccountPage extends PureComponent {
   }
 
   render() {
-    return (
-      <> 
+    return this.state.auth ? (
+      <>
         <h1 className={styles.title}>Selecione um perfil</h1>
         <ul className={styles.profileList}>
           {
             this.state.profiles.map(profile => {
               return <ProfileItem
-                        key={profile.id}
-                        name={profile.name}
-                        clicked={this.onProfileClick.bind(this, profile.id, profile.name)}
-                      />
+                key={profile.id}
+                name={profile.name}
+                clicked={this.onProfileClick.bind(this, profile.id, profile.name)}
+              />
             })
           }{
             this.state.profiles.length < 4 ? (
-              <ProfileItem  plusPlaceHolder
-                            clicked={this.onAddProfileClick.bind(this)}
+              <ProfileItem plusPlaceHolder
+                clicked={this.onAddProfileClick.bind(this)}
               />
             ) : (
-              null
+                null
             )
           }
         </ul>
       </>
-    )
+    ) : null
   }
 }
 
